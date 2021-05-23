@@ -1,0 +1,61 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
+
+.student-card {
+  font-family: "Raleway", sans-serif;
+  display: grid;
+  grid-template-columns: min-content;
+  grid-gap: 20px;
+  grid-template-areas:
+    " img content"
+    "img content";
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+li {
+  list-style: none;
+}
+
+.picture {  
+  width: 120px;
+  padding-top: 20px;
+ 
+}
+.ui-image {
+  width: 120px;
+  height: 120px;
+  border: 1px dotted #ccc;
+  border-radius: 50%;
+ 
+  
+  grid-area: img;
+}
+
+.student-info {
+  grid-area: content;
+
+}
+
+.student-name{
+    font-size: 3rem;
+}
+
+.border-box{
+ width: 90vh;
+ height:90vh;
+ top: 50%;
+ left:50%;
+ position: fixed;
+ margin-top: -450px;
+ margin-left: -350px;
+ border: 1px solid #ccc;
+ border-radius: 5px;
+ overflow-x: hidden;
+ overflow:scroll;
+ box-shadow: 10px 10px 10px black;
+
+}
+
+.name-search{
+  width: 100%
+}
