@@ -3,7 +3,7 @@
 .student-card {
   font-family: "Raleway", sans-serif;
   display: grid;
-  grid-template-columns: min-content;
+  grid-template-columns:1fr 5fr;
   grid-gap: 20px;
   grid-template-areas:
     " img content"
@@ -58,4 +58,13 @@ li {
 
 .name-search{
   width: 100%
+}
+
+.individual-tag{
+  display: inline-block;
+  padding:.2rem .5rem;
+}
+
+.tag-input{
+  margin-top: .4rem;
 }

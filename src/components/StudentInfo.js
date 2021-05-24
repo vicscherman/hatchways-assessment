@@ -7,25 +7,13 @@ import Tags from "./Tags";
 const StudentInfo = () => {
   const [studentList, setSetudentList] = useState([]);
   const URL = "https://api.hatchways.io/assessment/students";
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchName, setSearchName] = useState("");
   const [searchTag, setSearchTag] = useState('');
-  const selected = (tags, id) => {
-    setSetudentList(
-      studentList.filter((val) => {
-        if (val.id === id) {
-          if (!val.tags) {
-            val.tags = [tags];
-          } else if (val.tags) {
-            val.tags = [...val.tags, tags];
-          }
-        }
-        return studentList;
-      })
-    );
-  };
+
+
 
   const handleInputChange = (event) => {
-    setSearchTerm(event.target.value);
+    setSearchName(event.target.value);
   };
 
   const handleTagSearch = (event) => {
@@ -43,51 +31,17 @@ const StudentInfo = () => {
   }, []);
 
   const renderedStudents = studentList
+  // Filter for first and last name
     .filter((val) => {
       // defining name for name search
-      let name = `${val.firstName} ${val.lastName}`.toLowerCase();
-      let savedTag = val.tags
-
-      // if there is no search term or search tag return everything
-      if (searchTerm === "" && searchTag === "") {
-        return true;
-
-      } 
-      // if There is a search tag bug no tag in the object we discard it
-      else if (searchTag && !savedTag) {
-   
-        return false;
-      // if there is a search term, no search tag, and a name match we show the result
-      }
+      let name = `${val.firstName} ${val.lastName}`.toLowerCase().trim();
     
-      else if (
-        searchTerm &&
-        !searchTag &&
-        name.includes(searchTerm.toLowerCase())
-      ) {
-        return true;
+      if (searchName === ""){
+        return val
+      }else if( name.toLowerCase().trim().includes(searchName.toLowerCase())){
+        return val
       }
-      // if there is a saved tag, a name match, and a match with a saved and the searched tag return the result
-      else if(
-       name.includes(searchTerm.toLowerCase()) && savedTag.filter(tag=>{
-          tag.toString().includes(searchTag.toLowerCase())
-        })
-      ){
-        console.log(savedTag[savedTag.length-1].filter(tag=>{
-         if(searchTag){
-          tag.includes(searchTag)}
-          console.log(tag,'tag')
-          return searchTag
-        }),'search term', searchTag, 'saved tags', savedTag[savedTag.length-1].join(','))
-          
-        return true
-      }
-
-      return false
-
-   
-
-    
+      // Talk to shane or nick about how to filter by tags 
       
     })
     .map((student) => {
@@ -100,6 +54,21 @@ const StudentInfo = () => {
         let avg = sum / grades.length;
         return avg;
       };
+      const selected = tags => console.log(tags)
+        // const selected = (tags, id) => {
+  //   setSetudentList(
+  //     studentList.filter((val) => {
+  //       if (val.id === id) {
+  //         if (!val.tags) {
+  //           val.tags = [tags];
+  //         } else if (val.tags) {
+  //           val.tags = [...val.tags, tags];
+  //         }
+  //       }
+  //       return studentList;
+  //     })
+  //   );
+  // };
 
       return (
         <div className="student-card">
@@ -115,11 +84,13 @@ const StudentInfo = () => {
             <li>Skill: {student.skill}</li>
             <li>Average: {getAverage(student.grades)}%</li>
             <Accordion  grades={student.grades} />
+            {/* What props are actually needed? */}
             <Tags tags={student.tags? student.tags: ''} selected={selected} id={student.id} />
           </div>
         </div>
       );
     });
+
 
   return (
     <div className="border-box">
