@@ -66,5 +66,15 @@ li {
 }
 
 .tag-input{
+  display: grid;
+  grid-template-columns: .45fr ;
   margin-top: .4rem;
+
+}
+
+
+ .error-message{
+  text-align: center;
+  color: red;
+
 }
