@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 
-const Tags = (props) => {
-  const [tags, setTags] = useState([]);
+const Tags = ({ enteredTags, studentId, parentTags }) => {
   const [error, setError] = useState(false);
-
-  // useEffect(()=> {
-  //     if(props.tags){
-  //         setTags(props.tags)
-  //       }
-
-  // },[])
+  const [tags, setTags] = useState([]);
+  useEffect(() => {
+    if (parentTags) {
+      setTags(parentTags);
+    }
+  }, [parentTags]);
 
   const addTags = (event) => {
     // check to see that it's not a blank tag or one that already exists, display feedback to user
@@ -18,11 +16,12 @@ const Tags = (props) => {
         setError(true);
       }
 
-      //if  our search input doesn't match anything in our tags state we can add the tag (prevent duplicate entries), then clear the box at the end
+      //if  our tag input doesn't match anything in our tags state we can add the tag (prevent duplicate entries), then clear the box at the end
       if ([...tags].includes(event.target.value) === false) {
         setError(false);
-        setTags([...tags, event.target.value]);
-        props.enteredTags([...tags, event.target.value]);
+        //  setTags([...tags,  event.target.value]);
+        enteredTags(event.target.value, studentId);
+
         event.target.value = "";
       }
     }
@@ -32,16 +31,18 @@ const Tags = (props) => {
     setTags(tags.filter((_, index) => index !== indexToRemove));
   };
 
-  const renderTags = tags.map((tag, index) => {
-    return (
-      <li key={index} className="individual-tag">
-        <a className="ui blue tag label">
-          {tag}{" "}
-          <i className="delete icon" onClick={() => removeTags(index)}></i>
-        </a>
-      </li>
-    );
-  });
+  const renderTags = tags
+    ? tags.map((tag, index) => {
+        return (
+          <li key={index} className="individual-tag">
+            <span  id={`${tag} exists`} className="ui blue tag label">
+              {tag}
+              <i className="delete icon" onClick={() => removeTags(index)}></i>
+            </span>
+          </li>
+        );
+      })
+    : "";
 
   return (
     <div className="container tag-input">
@@ -60,7 +61,7 @@ const Tags = (props) => {
         }`}</p>
       </div>
 
-      <ul>{renderTags}</ul>
+      <ul>{tags && renderTags}</ul>
     </div>
   );
 };
