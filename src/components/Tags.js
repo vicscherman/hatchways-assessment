@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 const Tags = ({ enteredTags, studentId, parentTags }) => {
   const [error, setError] = useState(false);
   const [tags, setTags] = useState([]);
+
+  
   useEffect(() => {
     if (parentTags) {
       setTags(parentTags);

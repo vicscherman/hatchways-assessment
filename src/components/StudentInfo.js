@@ -10,16 +10,22 @@ const StudentInfo = () => {
   const URL = "https://api.hatchways.io/assessment/students";
   const [searchName, setSearchName] = useState("");
   const [searchTag, setSearchTag] = useState("");
-
-  const enteredTags = (tag, studentId) => {
+// when a tag is entered we take in the tag and the student id and
+  const enteredTags = (tags, studentId) => {
+    // generate a copy of the student list
     const newStudentList = [...studentList];
+    //set the new student list but add in a tags field to them, makes it easier to render the tags later
     setSetudentList(
-      newStudentList.filter((value) => {
-        if (value.id === studentId) {
-          if (!value.tag) {
-            value.tag = [tag];
+      newStudentList.filter((student) => {
+        // if the student ID matches the student ID of the tag we're entering
+        if (student.id === studentId) {
+          console.log(student)
+          // if the student doesn't have a tag we create one
+          if (!student.tags) {
+            student.tags = [tags];
           } else {
-            value.tag = [...value.tag, tag];
+            // else we add one
+           student.tags = [...student.tags, tags];
           }
         }
         return newStudentList;
@@ -57,25 +63,30 @@ const StudentInfo = () => {
   // function for searching student list
   const searchFilter = (studentList) => {
     return studentList.filter((student) => {
+      // definining name to search
       let existingName = `${student.firstName} ${student.lastName}`
         .toLowerCase()
         .trim();
-      let tagsString = student.tag ? student.tag.toString() : "";
+        // defining tags to search
+      let tagsString = student.tags ? student.tags.toString().toLowerCase() : "";
 
 
       if (searchName === "" && searchTag === "") {
         return true;
       } else if (
+        // if there's a name in our list that matches our search term and we're not searching by tag
         existingName.toLowerCase().trim().includes(searchName.toLowerCase()) &&
         !searchTag
       ) {
         return true;
       } else if (
+        // there are tags that exist, and there's a match with our name search and a match with our tag search
         tagsString &&
         existingName.toLowerCase().trim().includes(searchName.toLowerCase()) &&
         tagsString.toLowerCase().includes(searchTag.toLowerCase())
       ) {
         return true;
+        // if there are tags tags that exist and no search term and there's a match with our tag search
       } else if (
         tagsString &&
         !searchName &&
@@ -85,13 +96,7 @@ const StudentInfo = () => {
       }
       return false;
 
-      //   tagsArray.map((tag) => {
-      //     if (searchTag === "") {
-      //       return true;
-      //     } else if (tag.toLowerCase().trim().includes(searchTag.toLowerCase())) {
-      //       return true;
-      //     }
-      //   });
+    
     });
   };
 
@@ -123,7 +128,7 @@ const StudentInfo = () => {
           <Tags
             enteredTags={enteredTags}
             studentId={student.id}
-            parentTags={student.tag ? student.tag : ''}
+            parentTags={student.tags ? student.tags : ''}
           />
         </div>
       </div>
