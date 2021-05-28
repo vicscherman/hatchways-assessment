@@ -10,8 +10,9 @@ const StudentInfo = () => {
   const URL = "https://api.hatchways.io/assessment/students";
   const [searchName, setSearchName] = useState("");
   const [searchTag, setSearchTag] = useState("");
-// when a tag is entered we take in the tag and the student id and
-  const enteredTags = (tags, studentId) => {
+
+  // when a tag is entered we take in the tag and the student id and
+  const enteredTags = (tag, studentId) => {
     // generate a copy of the student list
     const newStudentList = [...studentList];
     //set the new student list but add in a tags field to them, makes it easier to render the tags later
@@ -19,19 +20,32 @@ const StudentInfo = () => {
       newStudentList.filter((student) => {
         // if the student ID matches the student ID of the tag we're entering
         if (student.id === studentId) {
-          console.log(student)
           // if the student doesn't have a tag we create one
           if (!student.tags) {
-            student.tags = [tags];
+            student.tags = [tag];
           } else {
             // else we add one
-           student.tags = [...student.tags, tags];
+            student.tags = [...student.tags, tag];
           }
         }
         return newStudentList;
       })
     );
- 
+  };
+
+  const deletedTags = (tag, studentId) => {
+    const newStudentList = [...studentList];
+
+    newStudentList.filter((student) => {
+      if (student.id === studentId) {
+        if (!student.tags) {
+          return false
+        } else {
+          student.tags = student.tags.filter((element) => element !== tag);
+        }
+      }
+      return newStudentList;
+    });
   };
 
   const handleNameSearch = (event) => {
@@ -60,6 +74,7 @@ const StudentInfo = () => {
 
     getStudents();
   }, []);
+
   // function for searching student list
   const searchFilter = (studentList) => {
     return studentList.filter((student) => {
@@ -67,9 +82,10 @@ const StudentInfo = () => {
       let existingName = `${student.firstName} ${student.lastName}`
         .toLowerCase()
         .trim();
-        // defining tags to search
-      let tagsString = student.tags ? student.tags.toString().toLowerCase() : "";
-
+      // defining tags to search
+      let tagsString = student.tags
+        ? student.tags.toString().toLowerCase()
+        : "";
 
       if (searchName === "" && searchTag === "") {
         return true;
@@ -95,26 +111,33 @@ const StudentInfo = () => {
         return true;
       }
       return false;
-
-    
     });
   };
 
-  const renderedStudents = searchFilter(studentList).map((student) => {
-    //   helper function go get student grades
-    const getAverage = (grades) => {
-      let sum = 0;
-      for (let i = 0; i < grades.length; i++) {
-        sum += parseInt(grades[i], 10);
-      }
-      let avg = sum / grades.length;
-      return avg;
-    };
+  //how to memoize?!!!!!
 
+  const gradesAverage = (grades) => {
+    let sum = 0;
+    for (let i = 0; i < grades.length; i++) {
+      sum += parseInt(grades[i], 10);
+    }
+    let avg = sum / grades.length;
+
+    return avg;
+  };
+
+  
+
+
+  const renderedStudents = searchFilter(studentList).map((student) => {
     return (
       <div className="student-card" key={student.id}>
         <div className="picture">
-          <img className="ui-image" src={student.pic} alt="studentPicture"></img>
+          <img
+            className="ui-image"
+            src={student.pic}
+            alt="studentPicture"
+          ></img>
         </div>
         <div className="student-info">
           <h2 className="student-name" key={student.id}>
@@ -123,12 +146,13 @@ const StudentInfo = () => {
           <li>Email: {student.email}</li>
           <li>Company: {student.company}</li>
           <li>Skill: {student.skill}</li>
-          <li>Average: {getAverage(student.grades)}%</li>
+          <li>Average: {gradesAverage(student.grades)}%</li>       
           <Accordion grades={student.grades} />
           <Tags
             enteredTags={enteredTags}
+            deletedTags={deletedTags}
             studentId={student.id}
-            parentTags={student.tags ? student.tags : ''}
+            parentTags={student.tags ? student.tags : ""}
           />
         </div>
       </div>

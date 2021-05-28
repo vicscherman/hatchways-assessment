@@ -3,6 +3,9 @@ import React, { useState } from "react";
 const Accordion = ({ grades }) => {
   const [open, setOpen] = useState();
 
+
+
+
   const renderedGrades = grades.map((grade, index) => {
     return (
       <React.Fragment>
